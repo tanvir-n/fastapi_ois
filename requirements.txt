@@ -1,0 +1,9 @@
+fastapi==0.103.1
+uvicorn==0.23.2
+python-dotenv==1.0.0
+pymysql==1.1.0
+SQLAlchemy==2.0.20
+cryptography==41.0.5
+python-jose[cryptography]==2.21
+passlib==1.7.4
+python-multipart
