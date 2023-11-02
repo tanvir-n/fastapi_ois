@@ -1,0 +1,4 @@
+fastapi
+app/__pycache__
+authentication/__pycache__
+config/__pycache__

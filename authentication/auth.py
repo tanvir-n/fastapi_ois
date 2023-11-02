@@ -3,9 +3,8 @@ from typing import Annotated
 from config.database import SessionLocal
 from config.dependencies import db_dependency
 from config.models import User
-from config.schemas import UserSchema
+from config.schemas import TokenSchema, UserSchema
 from config.config import AUTH_ALGORITHM, AUTH_SECRET_KEY
-from authentication.schemas import TokenSchema 
 from fastapi import APIRouter, status, HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -30,7 +29,7 @@ async def create_new_user(user: UserSchema, db: db_dependency):
     db.add(new_user)
     db.commit()
 
-    return {'user': user}
+    return {'username': user.username, 'email': user.email}
 
 
 @router.post('/token', response_model=TokenSchema)

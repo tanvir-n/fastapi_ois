@@ -3,6 +3,12 @@ from enum import Enum
 from typing import List
 from pydantic import BaseModel
 
+
+class TokenSchema(BaseModel):
+    access_token: str
+    token_type: str
+
+    
 class UserSchema(BaseModel):
     username: str
     email: str
@@ -29,7 +35,7 @@ class PaymentFormSchema(BaseModel):
 class PaymentLogSchema(BaseModel):
     user_id: int
     form_id: int
-    date: datetime = datetime.now
+    date: datetime
     is_succeded: bool
     amount: int
 
