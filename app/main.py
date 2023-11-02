@@ -14,14 +14,26 @@ app = FastAPI()
 app.include_router(auth.router)
 
 
+@app.post('/user/create', status_code=status.HTTP_201_CREATED)
+async def create_new_user(user: UserSchema, db: db_dependency):
+    user_dict = user.dict()
+
+    new_user = User(username=user.username, password=auth.bcrypt_context.hash(user.password))
+    db.add(new_user)
+    db.commit()
+
+    return {'username': user.username, 'email': user.email}
+
+
 @app.post('/payment-form/create', status_code=status.HTTP_201_CREATED)
 async def create_payment_form(user: user_dependency, payment_form: PaymentFormSchema, db: db_dependency):
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='You are not authorized to create new form.')
     form_dict = payment_form.dict()
     form_name = str(form_dict["form_name"]).replace(' ', '-')
-    url_param = f'{form_dict["user_id"]}/{form_name}' 
+    url_param = f'{user.id}/{form_name}' 
     form_dict['form_url'] = 'http://localhost:8000/'.join(url_param)
+    form_dict['user_id'] = user.id
     
     new_form = PaymentForm(**form_dict)
     db.add(new_form)
@@ -63,7 +75,7 @@ async def make_the_transaction(pay_log: PaymentLogSchema, db: db_dependency):
     db.commit()
 
     user_email = db.query(User).filter(User.id==pay_log.user_id).first().email
-    mail.schedule_mail(user_email)
+    schedule_mail(user_email)
 
     return {'status': 'transaction complete successfully'}
 

@@ -26,7 +26,6 @@ class PaymentFormSchema(BaseModel):
     description: str
     amount: int
     currency: CURRENCY
-    user_id: int
 
     class Config:
        use_enum_values = True

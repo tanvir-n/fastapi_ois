@@ -21,17 +21,6 @@ router = APIRouter(
 bcrypt_context = CryptContext(schemes=['bcrypt'])
 
 
-@router.post('/user/create', status_code=status.HTTP_201_CREATED)
-async def create_new_user(user: UserSchema, db: db_dependency):
-    user_dict = user.dict()
-
-    new_user = User(username=user.username, password=bcrypt_context.hash(user.password))
-    db.add(new_user)
-    db.commit()
-
-    return {'username': user.username, 'email': user.email}
-
-
 @router.post('/token', response_model=TokenSchema)
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: db_dependency):
     
